@@ -5,6 +5,8 @@ Cordova plugin for firebase push notification iOS and Android
 This is quick and dirty implimentation to support iOS cordova 9.
 iOS part is in Swift and using CocoaPods
 
+Part of the code is inspired by *cordova-plugin-firebase* and other plugins.
+
 Resources are copied every time with `cordova prepare`
 
 Add to config.xml
