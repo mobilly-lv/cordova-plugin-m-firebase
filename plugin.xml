@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-m-firebase" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>MobillyFirebase</name>
+    <js-module name="MobillyFirebase" src="www/MobillyFirebase.js">
+        <clobbers target="cordova.plugins.MobillyFirebase" />
+    </js-module>
+
+    <hook src="scripts/after_prepare.js" type="after_prepare"/>
+
+    <platform name="android">
+
+        <framework src="m-firebase.gradle" custom="true" type="gradleReference" />
+
+        <source-file src="src/android/MyFirebaseMessagingService.java" target-dir="src/mobilly" />
+        <source-file src="src/android/MobillyFirebase.java" target-dir="src/mobilly" />
+
+        <config-file parent="./application" target="AndroidManifest.xml">
+            <service android:exported="false" android:name="mobilly.MyFirebaseMessagingService">
+                <intent-filter>
+                    <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                </intent-filter>
+            </service>
+
+            <meta-data
+                    android:name="com.google.firebase.messaging.default_notification_icon"
+                    android:resource="@drawable/ic_notification" />
+            <meta-data
+                    android:name="com.google.firebase.messaging.default_notification_color"
+                    android:resource="@color/colorAccent" />
+            <receiver android:name="mobilly.OnNotificationOpenReceiver" />
+        </config-file>
+
+
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="MobillyFirebase">
+                <param name="android-package" value="mobilly.MobillyFirebase" />
+            </feature>
+        </config-file>
+
+    </platform>
+
+
+
+
+
+    <platform name="ios">
+
+        <!--<hook type="after_plugin_install" src="scripts/ios/after_install.js" />-->
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="MobillyFirebase">
+                <param name="ios-package" value="MobillyFirebase" />
+            </feature>
+        </config-file>
+
+        <source-file src="src/ios/PushNotificationManager.swift" />
+        <source-file src="src/ios/MobillyFirebase.swift" />
+
+        <resource-file src="src/ios/GoogleService-Info.plist" />
+
+        <podspec>
+            <config>
+                <source url="https://github.com/brightcove/BrightcoveSpecs.git" />
+                <source url="https://github.com/CocoaPods/Specs.git"/>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="Firebase/Core" spec="> 0.1" />
+                <pod name="Firebase/Messaging" spec="> 0.1" />
+                <pod name="Firebase/Auth" spec="> 0.1" />
+                <pod name="Firebase/Database" spec="> 0.1" />
+                <pod name="Firebase/Storage" spec="> 0.1" />
+                <pod name="Firebase/Firestore" spec="> 0.1" />
+                <pod name="Firebase/InAppMessagingDisplay" spec="> 0.1" />
+            </pods>
+        </podspec>
+
+    </platform>
+
+
+</plugin>
+
