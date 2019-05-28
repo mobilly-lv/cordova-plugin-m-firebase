@@ -6,6 +6,8 @@ This is quick and dirty implimentation to support iOS cordova 9.
 iOS part is in Swift and using CocoaPods
 
 Resources are copied every time with `cordova prepare`
+
+Add to config.xml
 ```xml
 <m-firebase>
     <colors src="res/m-firebase-colors.xml"/>
@@ -17,4 +19,5 @@ Resources are copied every time with `cordova prepare`
     <ic-notification src="res/icons/android/ic_android_notification_xhdpi.png" size="xhdpi"/>
     <ic-notification src="res/icons/android/ic_android_notification_xxhdpi.png" size="xxhdpi"/>
     <ic-notification src="res/icons/android/ic_android_notification_xxxhdpi.png" size="xxxhdpi"/>
-  </m-firebase>```
+  </m-firebase>
+```
