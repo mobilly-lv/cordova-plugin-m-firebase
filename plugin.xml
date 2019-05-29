@@ -12,6 +12,7 @@
         <framework src="m-firebase.gradle" custom="true" type="gradleReference" />
 
         <source-file src="src/android/MyFirebaseMessagingService.java" target-dir="src/mobilly" />
+        <source-file src="src/android/OnNotificationOpenReceiver.java" target-dir="src/mobilly" />
         <source-file src="src/android/MobillyFirebase.java" target-dir="src/mobilly" />
 
         <config-file parent="./application" target="AndroidManifest.xml">
