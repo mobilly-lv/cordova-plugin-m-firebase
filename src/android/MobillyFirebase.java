@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -23,13 +24,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
+import java.util.Iterator;
 import java.util.Set;
 
 public class MobillyFirebase extends CordovaPlugin {
 
     private static MobillyFirebase currentInstance = null;
     private static CallbackContext firebaseCallback = null;
-//    private CallbackContext callbackContext;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private String TAG;
+
+
 
 
     @Override
@@ -46,17 +51,6 @@ public class MobillyFirebase extends CordovaPlugin {
 
     public static void sendNotification(Bundle data, Context context) {
         if (data != null) {
-
-
-
-            /*for (String key : data.keySet()) {
-                Object value = data.get(key);
-                Log.d("mobilly", String.format("%s %s (%s)", key,
-                        value.toString(), value.getClass().getName()));
-            }*/
-
-
-
             MobillyFirebase.currentInstance.cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
                     JSONObject json = new JSONObject();
@@ -85,8 +79,27 @@ public class MobillyFirebase extends CordovaPlugin {
 
     }
 
+
+    @Override
+    protected void pluginInitialize() {
+        final Context context = this.cordova.getActivity().getApplicationContext();
+        final Bundle extras = this.cordova.getActivity().getIntent().getExtras();
+        this.cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                Log.v("mtest","init1");
+                FirebaseApp.initializeApp(context);
+                FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
+                mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+//                FirebaseApp.initializeApp(context);
+
+            }
+        });
+    }
+
     @Override
     public void initialize (CordovaInterface cordova, CordovaWebView webView) {
+        Log.v("mtest","init2");
         MobillyFirebase.currentInstance = this;
     }
 
@@ -94,9 +107,10 @@ public class MobillyFirebase extends CordovaPlugin {
     public boolean execute(String _action, JSONArray _args, CallbackContext _callbackContext) throws JSONException {
         Log.v("mobilly execute _action",_action);
         if (_action.equals("initialize")) {
-            Log.v("mobilly","initialize");
-            FirebaseApp.initializeApp(webView.getContext());
-            FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+            Log.v("mobilly","initializ");
+
+
+
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                         @Override
@@ -119,6 +133,13 @@ public class MobillyFirebase extends CordovaPlugin {
             Log.v("mobilly","onNotification");
             MobillyFirebase.firebaseCallback = _callbackContext;
             return true;
+        }else if(_action.equals("setUserId")){
+            Log.v("mobilly","setUserId");
+            this.setUserId(_callbackContext, _args.getString(0));
+            return true;
+        }else if (_action.equals("logEvent")) {
+            this.logEvent(_callbackContext, _args.getString(0), _args.getJSONObject(1));
+            return true;
         }
         return false;
     }
@@ -127,4 +148,47 @@ public class MobillyFirebase extends CordovaPlugin {
         if(MobillyFirebase.currentInstance!=null && MobillyFirebase.currentInstance.firebaseCallback !=null)
             MobillyFirebase.currentInstance.firebaseCallback.success(_result);
     }
+
+    private void setUserId(final CallbackContext callbackContext, final String id) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                try {
+                    mFirebaseAnalytics.setUserId(id);
+                    callbackContext.success();
+                } catch (Exception e) {
+//                    Crashlytics.logException(e);
+                    callbackContext.error(e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void logEvent(final CallbackContext callbackContext, final String name, final JSONObject params)
+            throws JSONException {
+        final Bundle bundle = new Bundle();
+        Iterator iter = params.keys();
+        while (iter.hasNext()) {
+            String key = (String) iter.next();
+            Object value = params.get(key);
+
+            if (value instanceof Integer || value instanceof Double) {
+                bundle.putFloat(key, ((Number) value).floatValue());
+            } else {
+                bundle.putString(key, value.toString());
+            }
+        }
+
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                try {
+                    mFirebaseAnalytics.logEvent(name, bundle);
+                    callbackContext.success();
+                } catch (Exception e) {
+//                    Crashlytics.logException(e);
+                    callbackContext.error(e.getMessage());
+                }
+            }
+        });
+    }
+
 }

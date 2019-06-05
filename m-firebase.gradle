@@ -1,6 +1,8 @@
 
 dependencies {
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+
 }
 
 buildscript {
@@ -11,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:+'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.google.gms:google-services:4.2.0'
     }
 }
@@ -20,10 +22,5 @@ buildscript {
 // cdvPluginPostBuildExtras. Therefore if googleServices is added
 // to cdvPluginPostBuildExtras somewhere else, the plugin execution
 // will be skipped and project build will be successfull
-ext.postBuildExtras = {
-    if (project.extensions.findByName('googleServices') == null) {
-        // apply plugin: 'com.google.gms.google-services'
-        // class must be used instead of id(string) to be able to apply plugin from non-root gradle file
-        apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
-    }
-}
+
+apply plugin: com.google.gms.googleservices.GoogleServicesPlugin

@@ -11,6 +11,17 @@ MobillyFirebase.onNotification = function(success, error) {
     exec(success, error, 'MobillyFirebase', 'onNotification');
 };
 
+MobillyFirebase.setUserId = function(userId,success, error) {
+    exec(success, error, 'MobillyFirebase', 'setUserId',[userId]);
+};
+
+MobillyFirebase.logEvent = function (name, params, success, error) {
+    exec(success, error, "MobillyFirebase", "logEvent", [name, params]);
+};
+
+MobillyFirebase.logError = function (message, success, error) {
+    exec(success, error, "MobillyFirebase", "logError", [message]);
+};
 
 module.exports = MobillyFirebase;
 

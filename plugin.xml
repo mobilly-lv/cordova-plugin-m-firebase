@@ -67,6 +67,7 @@
             <pods use-frameworks="true">
                 <pod name="Firebase/Core" spec="> 0.1" />
                 <pod name="Firebase/Messaging" spec="> 0.1" />
+                <pod name="Firebase/Analytics" spec="> 0.1" />
                 <pod name="Firebase/Auth" spec="> 0.1" />
                 <pod name="Firebase/Database" spec="> 0.1" />
                 <pod name="Firebase/Storage" spec="> 0.1" />
