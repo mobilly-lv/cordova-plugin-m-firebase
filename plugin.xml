@@ -15,13 +15,19 @@
         <source-file src="src/android/OnNotificationOpenReceiver.java" target-dir="src/mobilly" />
         <source-file src="src/android/MobillyFirebase.java" target-dir="src/mobilly" />
 
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="MobillyFirebase">
+                <param name="android-package" value="mobilly.MobillyFirebase" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
         <config-file parent="./application" target="AndroidManifest.xml">
             <service android:exported="false" android:name="mobilly.MyFirebaseMessagingService">
                 <intent-filter>
                     <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 </intent-filter>
             </service>
-
             <meta-data
                     android:name="com.google.firebase.messaging.default_notification_icon"
                     android:resource="@drawable/ic_notification" />
@@ -30,7 +36,6 @@
                     android:resource="@color/colorAccent" />
             <receiver android:name="mobilly.OnNotificationOpenReceiver" />
         </config-file>
-
 
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="MobillyFirebase">
@@ -41,11 +46,7 @@
     </platform>
 
 
-
-
-
     <platform name="ios">
-
         <!--<hook type="after_plugin_install" src="scripts/ios/after_install.js" />-->
 
         <config-file target="config.xml" parent="/*">
