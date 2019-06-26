@@ -37,11 +37,6 @@
             <receiver android:name="mobilly.OnNotificationOpenReceiver" />
         </config-file>
 
-        <config-file parent="/*" target="res/xml/config.xml">
-            <feature name="MobillyFirebase">
-                <param name="android-package" value="mobilly.MobillyFirebase" />
-            </feature>
-        </config-file>
 
     </platform>
 
@@ -52,6 +47,7 @@
         <config-file target="config.xml" parent="/*">
             <feature name="MobillyFirebase">
                 <param name="ios-package" value="MobillyFirebase" />
+                <param name="onload" value="true" />
             </feature>
         </config-file>
 
